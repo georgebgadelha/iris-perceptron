@@ -4,14 +4,32 @@ import numpy as np
 
 from perceptron import Perceptron
 
+# Abrindo Database
 dataset = pd.read_csv('databases/sonar.all-data', header=None)
 dataset.replace(['R', 'M'], [1, 0], inplace=True)
-shuffledDataset = dataset.iloc[:,0:61].values
-shuffledDataset = np.random.shuffle(shuffledDataset)
-#X = dataset.iloc[:, 0:60].values
-#d = dataset.iloc[:, 60:].values
 
-p = Perceptron(len(X[0]), epochs=10000)
+# Embaralhando Database
+shuffledDataset = dataset.iloc[:,0:61].values
+np.random.shuffle(shuffledDataset)
+
+# Separando Database Teste e Treinamento
+trainingDataset = shuffledDataset[0:int(np.floor(len(shuffledDataset)*0.75))]
+testDataset = shuffledDataset[int(np.floor(len(shuffledDataset)*0.75)):]
+
+# Separando trainingDataset em valores e resultados
+inputs = trainingDataset[:, 0:(len(trainingDataset[0])-1)]
+outputs = trainingDataset[:, (len(trainingDataset[0])-1):]
+
+# Criando Perceptron e Adaline
+p = Perceptron(len(inputs[0]), epochs=1000)
+
+# Treinando Perceptron e Adaline
+oldWeights = p.weights
+qntEpochs = p.train(inputs, outputs)
+newWeights = p.weights
+print(f'Pesos Anterior: {oldWeights}')
+print(f'Pesos Atuais: {newWeights}')
+print(f'Quantidade Epochs utilizadas: {qntEpochs}')
 
 #plt.xlim(-1,3)
 #plt.ylim(-1,3)
@@ -27,7 +45,7 @@ p = Perceptron(len(X[0]), epochs=10000)
 #plt.plot(xH, yH, 'y-')
 
 
-p.train(X, d)
+
 
 
 #print(p.predict(X[0]))
