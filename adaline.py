@@ -9,15 +9,21 @@ class Adaline():
         self.learning_rate = learning_rate
         self.weights = np.random.rand(input_size + 1)
         self.precision = precision
+        self.error = []
         
     
-    def predict(self, inputs):
+    def predict_act_func(self, inputs):
         inputs = np.append(-1, inputs)
         u = np.dot(inputs, self.weights)
         return self.act_func(u)
         
+    def predict(self, inputs):
+        inputs = np.append(-1, inputs)
+        return np.dot(inputs, self.weights)
+        
     
     def train(self, training_inputs, labels):
+        error = []
         for e in range(self.epochs):
             print(f'>>> Start epoch {e + 1}')
             #print(f'Actual weights {self.weights}')
@@ -31,10 +37,11 @@ class Adaline():
             print(f'EQM ATUAL: {eqmAtual}')
             print(f'ABS ATUAL - ANTERIOR: {abs(eqmAtual - eqmAnterior)}')
             print('')
-            if abs(0 - eqmAtual) <= self.precision:
+            error.append(abs(eqmAtual - eqmAnterior))
+            if abs(eqmAtual - eqmAnterior) <= self.precision:
 #            if eqmAtual <= self.precision:
                 break
-        return e + 1
+        return e + 1, error
     
     def eqm(self, trainInputs, trainOutputs):
         eqmCalc = 0

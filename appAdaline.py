@@ -26,11 +26,12 @@ testInputs = testDataset[:, 0:(len(testDataset[0])-1)]
 testOutputs = testDataset[:, (len(testDataset[0])-1):]
 
 # Criando Adaline
-a = Adaline(len(trainInputs[0]), epochs=1000,learning_rate=0.0025)
+#a = Adaline(len(trainInputs[0]), epochs=1000,learning_rate=0.0025, precision=0.000001)
+a = Adaline(len(trainInputs[0]), epochs=1000,learning_rate=0.0025, precision=0.000001)
 
 # Treinando Adaline
 oldWeights = a.weights
-qntEpochs = a.train(trainInputs, trainOutputs)
+qntEpochs, erro = a.train(trainInputs, trainOutputs)
 newWeights = a.weights
 print(f'Adaline - Pesos Anterior: {oldWeights}')
 print(f'Adaline - Pesos Atuais: {newWeights}')
@@ -40,8 +41,41 @@ print('')
 # Prevendo valores
 predictedValues = []
 for testInput in testInputs:
-    predictedValues.append(a.predict(testInput))
+    predictedValues.append(a.predict_act_func(testInput))
 
 # Printando matriz de confusão
 print('----- Matriz de Confusão -----')
-print(confusion_matrix(testOutputs,predictedValues))
+confusion_matrix = confusion_matrix(testOutputs,predictedValues)
+print(confusion_matrix)
+tp, fp, fn, tn = confusion_matrix.ravel()
+
+accuracy = round((tp+tn)/(tp+fp+tn+fn),2)
+recall = round(tp/(tp+fn),2)
+precision = round(tp/(tp+fp),2)
+fscore = round(2 * ((precision * recall)/(precision + recall)),2)
+
+fontDictionary = {
+        'color': 'black',
+        'size': 16
+        }
+
+print(a.error)
+
+plt.figure()
+plt.ylabel('Classificados')
+plt.xticks([1, 3, 5, 7], ['TN', 'FP', 'FN', 'TP'])
+plt.bar([1, 3, 5, 7], [tn, fp, fn, tp], width = 0.7)
+plt.title('Matriz de Confusão')
+plt.show()
+
+plt.figure()
+plt.text(0.1,0.8,f'Acurácia: {accuracy}', fontdict = fontDictionary)
+plt.text(0.1,0.6,f'Recall: {recall}',  fontdict = fontDictionary)
+plt.text(0.1,0.4,f'Precisão: {precision}',  fontdict = fontDictionary)
+plt.text(0.1,0.2,f'FScore: {fscore}',  fontdict = fontDictionary)
+plt.show()
+
+plt.figure()
+plt.plot(erro)
+plt.show()
+#print(confusion_matrix(testOutputs,predictedValues))
