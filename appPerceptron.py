@@ -28,10 +28,20 @@ testOutputs = testDataset[:, (len(testDataset[0])-1):]
 # Criando Perceptron
 p = Perceptron(len(trainInputs[0]), epochs=1000,learning_rate=0.0025)
 
+# Salvando Pesos Anteriores
+oldWeights = ';'.join(['%.8f' % num for num in p.weights])
+
 # Treinando Perceptron
-oldWeights = p.weights
 qntEpochs = p.train(trainInputs, trainOutputs)
-newWeights = p.weights
+
+# Salvando Pesos Novos
+newWeights = ';'.join(['%.8f' % num for num in p.weights])
+
+# Adicionando separador por ";"
+np.fromstring(oldWeights, sep=';')
+np.fromstring(newWeights, sep=';')
+
+# Printando Pesos Antigos e Novos, e Quantidade de epocas utilizadas
 print(f'Perceptron - Pesos Anterior: {oldWeights}')
 print(f'Perceptron - Pesos Atuais: {newWeights}')
 print(f'Perceptron - Quantidade Epochs utilizadas: {qntEpochs}')
