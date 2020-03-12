@@ -28,10 +28,16 @@ testOutputs = testDataset[:, (len(testDataset[0])-1):]
 # Criando Adaline
 a = Adaline(len(trainInputs[0]), epochs=1000,learning_rate=0.0025)
 
+# Salvando Pesos Anteriores
+oldWeights = ';'.join(['%.8f' % num for num in a.weights])
+
 # Treinando Adaline
-oldWeights = a.weights
 qntEpochs = a.train(trainInputs, trainOutputs)
-newWeights = a.weights
+
+# Salvando Pesos Novos
+newWeights = ';'.join(['%.8f' % num for num in a.weights])
+
+# Printando Pesos Antigos e Novos, e Quantidade de epocas utilizadas
 print(f'Adaline - Pesos Anterior: {oldWeights}')
 print(f'Adaline - Pesos Atuais: {newWeights}')
 print(f'Adaline - Quantidade Epochs utilizadas: {qntEpochs}')
